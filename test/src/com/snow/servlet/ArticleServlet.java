@@ -20,6 +20,7 @@ import com.snow.model.User;
 import com.snow.util.DBUtil;
 
 /**
+ * ce shi qi ta user
  * Servlet implementation class ArticleServlet
  */
 public class ArticleServlet extends HttpServlet {
