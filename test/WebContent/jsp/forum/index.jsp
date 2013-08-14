@@ -22,7 +22,7 @@ List<Topic> list = (List<Topic>)request.getAttribute("list");
 for(Iterator<Topic> i = list.iterator(); i.hasNext();) {
 	Topic t = i.next();
 %>
-<tr><td>论题：<a href="<%=request.getContextPath()%>/TopicServlet?method=detail&id=<%=t.getId()%>"><%=t.getTitle() %></a></td></tr>
+<tr><td>论题：<a href="<%=request.getContextPath()%>/TopicServlet?method=detail&id=<%=t.getId() %>"><%=t.getTitle() %></a></td></tr>
 <%
 }
 %>

@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.snow.model.Comment;
 import com.snow.model.Topic;
-import com.snow.model.Type;
 import com.snow.util.DBUtil;
 
 /**
@@ -57,9 +57,12 @@ public class TopicServlet extends HttpServlet {
 		Connection conn = DBUtil.getConn();
 		String typeid = request.getParameter("typeid");
 		String sql = "select * from topic where typeid = ?";
+		
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			
 			ps.setInt(1, Integer.parseInt(typeid));
+			
 			ResultSet rs = ps.executeQuery();
 			List<Topic> list = new ArrayList<Topic>();
 			while(rs.next()) {
@@ -70,6 +73,7 @@ public class TopicServlet extends HttpServlet {
 				t.setTypeid(Integer.parseInt(rs.getString("typeid")));
 				list.add(t);
 			}
+			
 			request.setAttribute("list", list);
 			request.setAttribute("typeid", typeid);
 			request.getRequestDispatcher("/jsp/forum/").forward(request, response);
@@ -90,6 +94,7 @@ public class TopicServlet extends HttpServlet {
 		String sql = "insert into topic (title, content, typeid) values (?, ?, ?)";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			
 			ps.setString(1, title);
 			ps.setString(2, content);
 			ps.setInt(3, Integer.parseInt(typeid));
@@ -107,18 +112,34 @@ public class TopicServlet extends HttpServlet {
 		Connection conn = DBUtil.getConn();
 		String id = request.getParameter("id");
 		String sql = "select * from topic where id = ?";
+		String temp1 = "select * from comment where topicid = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			PreparedStatement ps1 = conn.prepareStatement(temp1);
 			ps.setInt(1, Integer.parseInt(id));
 			ResultSet rs = ps.executeQuery();
 			Topic t = new Topic();
+			List<Comment> list = null;
 			while(rs.next()) {
 				t.setId(Integer.parseInt(rs.getString("id")));
 				t.setTitle(rs.getString("title"));
 				t.setContent(rs.getString("content"));
 				t.setTypeid(Integer.parseInt(rs.getString("typeid")));
 			}
+			if(t.getId() != 0) {
+				ps1.setInt(1, (t.getId()));
+				ResultSet rs1 = ps1.executeQuery();
+				list = new ArrayList<Comment>();
+				while(rs1.next()) {
+					Comment c = new Comment();
+					c.setId(Integer.parseInt(rs1.getString("id")));
+					c.setContent(rs1.getString("content"));
+					c.setTopicid(Integer.parseInt(rs1.getString("topicid")));
+					list.add(c);
+				}
+			}
 			request.setAttribute("topic", t);
+			request.setAttribute("list", list);
 			request.getRequestDispatcher("/jsp/forum/forum.jsp").forward(request, response);
 		} catch (SQLException e) {
 			e.printStackTrace();
