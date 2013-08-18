@@ -59,4 +59,14 @@
     <servlet-name>CommentServlet</servlet-name>
     <url-pattern>/CommentServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AArticleServlet</display-name>
+    <servlet-name>AArticleServlet</servlet-name>
+    <servlet-class>com.android.servlet.AArticleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AArticleServlet</servlet-name>
+    <url-pattern>/AArticleServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
