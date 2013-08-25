@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -47,6 +49,8 @@ public class AArticleServlet extends HttpServlet {
 		String method = request.getParameter("method");
 		if("query".equals(method)) {
 			query(request, response);
+		} else if ("insert".equals(method)) {
+			insert(request, response);
 		}
 	}
 	
@@ -90,6 +94,41 @@ public class AArticleServlet extends HttpServlet {
 			response.setContentType("text/html; charset=GBK");
 			response.getWriter().println(jsonArr.toString());
 			//response.sendRedirect(request.getContextPath() + "/l.jsp");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
+		
+	}
+	
+	private void insert(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String typeid = request.getParameter("typeid");
+		String userid = request.getParameter("userid");
+		String title = request.getParameter("title");
+		String author = request.getParameter("author");
+		String content = request.getParameter("content");
+		Date date = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:ss");
+		String time = df.format(date);
+		Connection conn = DBUtil.getConn();
+		String sql = "insert into article values (null, ?, ?, ?, ?, ?)";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(typeid));
+			if(userid != null && !"".equals(userid)){
+				ps.setInt(2, Integer.parseInt(userid));
+			}else {
+				ps.setInt(2, 9999);
+			}
+			if(userid == null || "".equals(userid)){
+				ps.setString(3, author + "-" + title);
+			}else{
+				ps.setString(3, title);
+			}
+			ps.setString(4, content);
+			ps.setString(5, time);
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
