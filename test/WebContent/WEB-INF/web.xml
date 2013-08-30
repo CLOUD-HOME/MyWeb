@@ -69,4 +69,14 @@
     <servlet-name>AArticleServlet</servlet-name>
     <url-pattern>/AArticleServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AUserServlet</display-name>
+    <servlet-name>AUserServlet</servlet-name>
+    <servlet-class>com.android.servlet.AUserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AUserServlet</servlet-name>
+    <url-pattern>/AUserServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
