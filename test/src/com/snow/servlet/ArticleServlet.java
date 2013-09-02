@@ -57,6 +57,8 @@ public class ArticleServlet extends HttpServlet {
 			delete(request, response);
 		} else if ("preUpdate".equals(method)) {
 			preUpdate(request, response);
+		} else if ("search".equals(method)) {
+			search(request, response);
 		}
 		
 	}
@@ -132,6 +134,7 @@ public class ArticleServlet extends HttpServlet {
 			}
 			request.setAttribute("list", list);
 			request.setAttribute("typeid", typeid);
+			request.setAttribute("keyword", "");
 			if("admin".equals(source)) {
 				request.getRequestDispatcher("/jsp/admin/article/list.jsp").forward(request, response);
 			}else{
@@ -144,6 +147,39 @@ public class ArticleServlet extends HttpServlet {
 			DBUtil.close(conn);
 		}
 		
+	}
+	
+	private void search(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User u = (User) request.getSession().getAttribute("user");
+		String keyword = request.getParameter("keyword");
+		
+		String sql = "select * from article where userid = ? and title like '%" + keyword + "%'";
+		Connection conn = DBUtil.getConn();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, u.getId());
+			ResultSet rs = ps.executeQuery();
+			List<Article> list = new ArrayList<Article>();
+			while(rs.next()) {
+				Article a = new Article();
+				a.setId(Integer.parseInt(rs.getString("id")));
+				a.setTypeid(Integer.parseInt(rs.getString("typeid")));
+				a.setUserid(Integer.parseInt(rs.getString("userid")));
+				a.setTitle(rs.getString("title"));
+				a.setContent(rs.getString("content"));
+				a.setTime(rs.getString("time"));
+				//System.out.println(a.toString());
+				list.add(a);
+			}
+			request.setAttribute("list", list);
+			request.setAttribute("keyword", keyword);
+			request.getRequestDispatcher("/jsp/admin/article/list.jsp").forward(request, response);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
 	}
 	
 	
