@@ -50,8 +50,8 @@ public class AUserServlet extends HttpServlet {
 			login(request, response);
 		} else if ("insert".equals(method)) {
 			insert(request, response);
-		} else if ("query".equals(method)) {
-			query(request, response);
+		} else if ("islogin".equals(method)) {
+			islogin(request, response);
 		} else if ("preUpdate".equals(method)) {
 			preUpdate(request, response);
 		} else if ("update".equals(method)) {
@@ -80,7 +80,7 @@ public class AUserServlet extends HttpServlet {
 			}
 			request.getSession().setAttribute("user", u);
 			JSONObject user= new JSONObject(u);
-			response.setContentType("text/html; charset=GBK");
+			response.setContentType("text/html; charset=utf-8");
 			response.getWriter().println(user.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -90,30 +90,11 @@ public class AUserServlet extends HttpServlet {
 	}
 	
 	
-	private void query(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Connection conn = DBUtil.getConn();
-		String sql = "select * from user";
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			List<User> ulist = new ArrayList<User>();
-			while(rs.next()) {
-				User u = new User();
-				u.setId(Integer.parseInt(rs.getString("id")));
-				u.setName(rs.getString("name"));
-				u.setPassword(rs.getString("password"));
-				u.setSex(rs.getString("sex"));
-				u.setEmail(rs.getString("email"));
-				u.setTime(rs.getString("time"));
-				ulist.add(u);
-			}
-			request.setAttribute("ulist", ulist);
-			request.getRequestDispatcher("/jsp/admin/user/list.jsp").forward(request, response);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.close(conn);
-		}  
+	private void islogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			User u = (User) request.getSession().getAttribute("user");
+			JSONObject user= new JSONObject(u);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(user.toString());
 	}
 	
 	

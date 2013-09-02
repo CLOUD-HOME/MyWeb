@@ -91,7 +91,7 @@ public class AArticleServlet extends HttpServlet {
 			//request.setAttribute("list", list);
 			//request.setAttribute("typeid", typeid);
 			JSONArray jsonArr= new JSONArray(list);
-			response.setContentType("text/html; charset=GBK");
+			response.setContentType("text/html; charset=utf-8");
 			response.getWriter().println(jsonArr.toString());
 			//response.sendRedirect(request.getContextPath() + "/l.jsp");
 		} catch (SQLException e) {
